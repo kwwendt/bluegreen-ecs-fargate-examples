@@ -18,32 +18,22 @@ def lambda_handler(event,context):
     count_200 = 0
     count_err = 0
     
-    s3client = boto3.client('s3')
+    code = 0
+    url = f"http://{endpoint}"
+    
     try:
-        s3client.download_file(bucket, file, "/tmp/"+file)
-    except:
-        pass
-    
-    with open("/tmp/"+file, newline='') as f:
-        reader = csv.reader(f)
-        list1 = list(reader)
-    
-    for url_part in list1:
-        code = 0
-        url = endpoint+url_part[0]
-        try:
-            request = urllib.request.urlopen(url)
-            code = request.code
-            if code == 200:
-                count_200 = count_200 + 1
-            else:
-                count_err = count_err + 1
-        except:
-            count_err = count_err + 1
-        if code == 0:
-            logger.info(url+" Error")
+        request = urllib.request.urlopen(url)
+        code = request.code
+        if code == 200:
+            count_200 = count_200 + 1
         else:
-            logger.info(url+" "+str(code))
+            count_err = count_err + 1
+    except:
+        count_err = count_err + 1
+    if code == 0:
+        logger.info(url+" Error")
+    else:
+        logger.info(url+" "+str(code))
 
     status = 'Failed'
     perc_200=(int((count_200/(count_200+count_err))*100))

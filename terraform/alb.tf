@@ -11,6 +11,10 @@ resource "aws_alb" "load_balancer" {
     enabled = true
   }
   depends_on = [aws_s3_bucket_policy.logs_bucket_policy]
+  tags = {
+    Name = "${local.name}_sg",
+    KimTemp = "test"
+  }
 }
 
 data "aws_lb_listener" "prod" {
@@ -44,6 +48,14 @@ resource "aws_security_group" "sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["1.2.3.4/32"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -52,7 +64,8 @@ resource "aws_security_group" "sg" {
   }
 
   tags = {
-    Name = "${local.name}_sg"
+    Name = "${local.name}_sg",
+    KimTemp = "test"
   }
 }
 

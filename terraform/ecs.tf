@@ -48,7 +48,7 @@ resource "aws_ecs_service" "ecs_service" {
   name             = local.name
   cluster          = aws_ecs_cluster.ecs_cluster.id
   task_definition  = aws_ecs_task_definition.task_definition.arn
-  desired_count    = 2
+  desired_count    = 3
   launch_type      = "FARGATE"
   platform_version = "1.4.0"
 
@@ -69,7 +69,12 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   lifecycle {
-    ignore_changes = [task_definition, load_balancer, desired_count]
+    ignore_changes = [task_definition, load_balancer]
+  }
+
+  tags = {
+    Name = "${local.name}_sg",
+    KimTemp = "test"
   }
 }
 

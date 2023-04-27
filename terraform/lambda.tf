@@ -10,7 +10,7 @@ resource "aws_lambda_function" "lambda" {
     variables = {
       BUCKET               = aws_s3_bucket.testdata_bucket.bucket
       FILEPATH             = "acceptance_url_list.csv"
-      ENDPOINT             = "${local.custom_endpoint}:8080"
+      ENDPOINT             = "${aws_alb.load_balancer.dns_name}:8080"
       ACCEPTANCE_THRESHOLD = "90"
     }
   }

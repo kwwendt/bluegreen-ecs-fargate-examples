@@ -50,7 +50,7 @@ resource "aws_codepipeline" "codepipeline" {
       owner           = "AWS"
       provider        = "CodeDeployToECS"
       version         = "1"
-      input_artifacts = ["source_output"]
+      input_artifacts = ["source_output", "build_output"]
 
       configuration = {
         ApplicationName                = local.name
@@ -59,6 +59,8 @@ resource "aws_codepipeline" "codepipeline" {
         AppSpecTemplatePath            = "appspec.yaml"
         TaskDefinitionTemplateArtifact = "source_output"
         TaskDefinitionTemplatePath     = "taskdef.json"
+        Image1ArtifactName             = "build_output"
+        Image1ContainerName            = "IMAGE1_NAME"
       }
     }
   }
